@@ -20,6 +20,14 @@ public class MakerbotExample {
     
     private Vector<String> getSourceCode() {
         Vector<String> code = new Vector<String>();
+        /*code.add("M103");
+        code.add("M73 P0");
+        code.add("G21");
+        code.add("G90");
+        code.add("M109 S110 T0");
+        code.add("M104 S220 T0");
+        code.add("G162 X Y F2500");
+        */
         code.add("G90");
         code.add("G162 X Y F2500");
         code.add("G92 X0 Y0 Z0");

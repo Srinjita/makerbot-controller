@@ -18,13 +18,13 @@ import replicatorg.machine.MachineToolStatusEvent;
 import replicatorg.model.StringListSource;
 
 public class Makerbot {
-
-    private static final String MACHINE_NAME = "Replicator 2";
-
+    
+    private static final String MACHINE_NAME = "The Replicator Dual";
+    
     private Machine machine;
     private MachineCallbackHandler handler;
     private boolean isBusy;
-
+    
     /**
      * Creates a connection to a Makerbot 3D printer for executing gcode. This
      * implementation assumes the machine type is a 'Replicator 2'.
@@ -32,8 +32,8 @@ public class Makerbot {
     public Makerbot() {
         isBusy = false;
     }
-
-    /** 
+    
+    /**
      * Connect to Makerbot 3D printer. Assumes the connection will be with a
      * 'Replicator 2' over USB port. The USB port is automatically detected.
      * This function must be called before executing commands.
@@ -43,9 +43,9 @@ public class Makerbot {
         String port = getUsbPort();
         machine.connect(port);
     }
-
+    
     /**
-     * Stops all work and disconnects from Makerbot 3D printer. 
+     * Stops all work and disconnects from Makerbot 3D printer.
      */
     public void disconnect() {
         machine.stopAll();
@@ -53,21 +53,21 @@ public class Makerbot {
         machine.dispose();
         handler.interrupt();
     }
-
+    
     /**
      * Executes gcode formated string. The string should be newline delimited,
      * with one line of gcode per line. This function blocks until the job has
      * completed.
      *
      * @param code the gcode to be executed
-     * @throws MakerbotException 
+     * @throws MakerbotException
      */
     public void execute(String code) throws MakerbotException {
         Scanner scanner = new Scanner(code);
         Vector<String> list = parse(scanner);
         execute(list);
     }
-
+    
     /**
      * Executes gcode file. The file should be newline delimited, with one line
      * of gcode per line. This function blocks until the job has completed.
@@ -77,13 +77,13 @@ public class Makerbot {
      * @throws MakerbotException if problems occur while executing code
      */
     public void execute(File code) throws FileNotFoundException,
-            MakerbotException {
-
+    MakerbotException {
+        
         Scanner scanner = new Scanner(code);
         Vector<String> list = parse(scanner);
         execute(list);
     }
-
+    
     /**
      * Executes list of gcode commands. Each entry in the <code>Vector</code>
      * should contain a single gcode command. This function blocks until the job
@@ -97,7 +97,7 @@ public class Makerbot {
         machine.buildDirect(source);
         waitForCompletion();
     }
-
+    
     // Creates a Vector of gcode from a scanner object
     // The scanner is closed upon completion
     private Vector<String> parse(Scanner scanner) {
@@ -107,11 +107,11 @@ public class Makerbot {
         while (scanner.hasNextLine()) {
             list.add(scanner.nextLine());
         }
-
+        
         scanner.close();
         return list;
     }
-
+    
     // Creates connection to Makerbot and starts a handler thread
     private void createMachine() {
         handler = new MachineCallbackHandler();
@@ -119,12 +119,12 @@ public class Makerbot {
         machine = MachineFactory.load(MACHINE_NAME, handler);
         handler.start();
     }
-
+    
     // Searches and returns a valid USB port
     // WARNING: uncertain what happens if multiple USB devices attached
     private String getUsbPort() {
         Vector<Name> ports = Serial.scanSerialNames();
-
+        
         // search each port
         for (Name port : ports) {
             // usb port found
@@ -132,15 +132,15 @@ public class Makerbot {
                 return port.getName();
             }
         }
-
+        
         // no usb ports found
         throw new IllegalStateException("no usb ports available");
     }
-
+    
     // blocks until print job completes
     private void waitForCompletion() {
         isBusy = true;
-
+        
         // wait until completion
         while (isBusy) {
             try {
@@ -150,33 +150,33 @@ public class Makerbot {
             }
         }
     }
-
+    
     /**
      * An implementation of <code>MachineListener</code> used for monitoring the
      * status of gcode execution.
      */
     private class MakerbotListener implements MachineListener {
-
+        
         @Override
         public void machineStateChanged(MachineStateChangeEvent event) {
             State state = event.getState().getState();
-
+            
             // check if build has finished
             if (state == State.READY) {
                 isBusy = false;
             }
         }
-
+        
         @Override
         public void machineProgress(MachineProgressEvent event) {
             // do nothing
         }
-
+        
         @Override
         public void toolStatusChanged(MachineToolStatusEvent event) {
             // do nothing
         }
         
     }
-
+    
 }

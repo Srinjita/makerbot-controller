@@ -15,6 +15,7 @@ public class MakerbotCLI {
         Makerbot makerbot = new Makerbot();
         makerbot.connect();
         makerbot.execute(file);
+        makerbot.execute(file);
         makerbot.disconnect();
     }
 
