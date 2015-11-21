@@ -5,7 +5,7 @@ import java.util.Vector;
 public class MakerbotExample {
 
     public MakerbotExample() {
-        
+
     }
 
     private void test() throws Exception {
@@ -17,7 +17,7 @@ public class MakerbotExample {
         makerbot.execute(code);
         makerbot.disconnect();
     }
-    
+
     private Vector<String> getSourceCode() {
         Vector<String> code = new Vector<String>();
         /*code.add("M103");
